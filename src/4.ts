@@ -27,22 +27,19 @@ class Key {
 }
 
 class Person {
-    private key: number;
-    constructor(theKey: number) { 
-        this.key = theKey;
-    }
+    constructor(private key: Key) {}
     
-    public getKey() {
+    public getKey(): Key {
         return this.key;
     }
 }
 
 abstract class House {
-    door: boolean = false;
-    key: number;
-    tenants: object[] = [];
+    protected door: boolean = false;
+    protected key: Key;
+    protected tenants: object[] = [];
 
-    constructor(theKey: number) {
+    constructor(theKey: Key) {
         this.key = theKey;
     }
 
@@ -52,12 +49,12 @@ abstract class House {
         }
     }
 
-    abstract openDoor(theKey: number): boolean;
+    abstract openDoor(theKey: Key): boolean;
 }
 
 class MyHouse extends House {
-    openDoor(theKey: number) {
-        if (this.key === theKey) {
+    openDoor(theKey: Key) {
+        if (this.key.getSignature() === theKey.getSignature()) {
             return this.door = true;
         }
         return false;
@@ -66,8 +63,9 @@ class MyHouse extends House {
 
 
 const key = new Key();
-const person = new Person(key.getSignature());
-const house = new MyHouse(key.getSignature());
+const house = new MyHouse(key);
+const person = new Person(key);
+
 house.openDoor(person.getKey());
 house.comeIn(person);
 
